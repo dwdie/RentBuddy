@@ -1744,6 +1744,55 @@ window.addEventListener('scroll', () => {
   await loadAllListings();
 })();
 
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_MSG_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
+
+
+// LOGIN
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+
+    const user = result.user;
+
+    alert("Welcome " + user.displayName);
+
+    console.log(user);
+
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+
+// LOGOUT
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await signOut(auth);
+
+  alert("Logged out");
+});
+
 </script>
 </body>
 </html>
