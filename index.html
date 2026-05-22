@@ -12,8 +12,8 @@
 <!-- LOGIN OVERLAY -->
 <div id="authOverlay" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
   <div class="bg-white p-6 rounded-2xl w-full max-w-sm text-center">
-    <h2 class="text-2xl font-bold mb-2">Welcome to RentBuddy</h2>
-    <p class="text-gray-500 mb-4">Login to continue</p>
+    <h2 class="text-2xl font-bold mb-2">RentBuddy Login</h2>
+    <p class="text-gray-500 mb-4">Login to post and view properties</p>
     <button id="overlayLoginBtn" class="w-full bg-pink-500 text-white py-3 rounded-xl">
       Login with Google
     </button>
@@ -35,48 +35,13 @@
   </div>
 </nav>
 
-<!-- ================= HOME PAGE ================= -->
-<section id="homePage">
+<!-- ================= HOME ================= -->
+<section id="homePage" class="px-6 py-10">
 
-  <!-- HERO -->
-  <div class="text-center px-6 py-14">
-    <h2 class="text-5xl font-bold mb-4">Find Your Perfect Home</h2>
-    <p class="text-gray-600 max-w-2xl mx-auto">
-      Browse rental homes in Bangladesh easily.
-    </p>
-  </div>
+  <h2 class="text-3xl font-bold mb-6">Latest Rentals</h2>
 
-  <!-- LISTINGS -->
-  <div class="px-6 grid grid-cols-1 md:grid-cols-3 gap-6 pb-16">
+  <div id="listings" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
 
-    <div class="bg-white rounded-2xl shadow overflow-hidden">
-      <img class="h-52 w-full object-cover" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200"/>
-      <div class="p-4">
-        <h3 class="font-bold">Modern Apartment</h3>
-        <p class="text-gray-500">Mymensingh</p>
-        <p class="font-bold mt-2">৳15,000</p>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow overflow-hidden">
-      <img class="h-52 w-full object-cover" src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200"/>
-      <div class="p-4">
-        <h3 class="font-bold">Family House</h3>
-        <p class="text-gray-500">Dhaka</p>
-        <p class="font-bold mt-2">৳25,000</p>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow overflow-hidden">
-      <img class="h-52 w-full object-cover" src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200"/>
-      <div class="p-4">
-        <h3 class="font-bold">Student Room</h3>
-        <p class="text-gray-500">Mymensingh</p>
-        <p class="font-bold mt-2">৳6,000</p>
-      </div>
-    </div>
-
-  </div>
 </section>
 
 <!-- ================= POST PAGE ================= -->
@@ -88,15 +53,13 @@
 
   <h2 class="text-3xl font-bold mb-6">Post a Property</h2>
 
-  <label class="font-semibold">Images</label>
-  <input id="images" type="file" multiple accept="image/*" class="block mb-3"/>
-  <div id="preview" class="flex gap-2 flex-wrap mb-5"></div>
-
   <input id="title" placeholder="Title" class="w-full border p-3 rounded-xl mb-4"/>
   <textarea id="details" placeholder="Details" class="w-full border p-3 rounded-xl mb-4"></textarea>
   <input id="price" placeholder="Price" class="w-full border p-3 rounded-xl mb-4"/>
   <input id="phone" placeholder="Phone Number" class="w-full border p-3 rounded-xl mb-4"/>
   <input id="location" placeholder="Location" class="w-full border p-3 rounded-xl mb-4"/>
+
+  <input id="images" type="file" multiple accept="image/*" class="mb-4"/>
 
   <button id="submitBtn" class="w-full bg-pink-500 text-white py-3 rounded-xl">
     Submit Property
@@ -115,6 +78,20 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCIoxwUza-JTJUmGRe80_hCID-AIfHlkUw",
   authDomain: "rentbuddyonline.firebaseapp.com",
@@ -126,13 +103,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 let user = null;
 
 /* LOGIN */
 const loginBtn = document.getElementById("loginBtn");
-const overlayLoginBtn = document.getElementById("overlayLoginBtn");
 const overlay = document.getElementById("authOverlay");
 
 function login() {
@@ -140,7 +118,7 @@ function login() {
 }
 
 loginBtn.onclick = login;
-overlayLoginBtn.onclick = login;
+document.getElementById("overlayLoginBtn").onclick = login;
 
 onAuthStateChanged(auth, (u) => {
   user = u;
@@ -148,6 +126,7 @@ onAuthStateChanged(auth, (u) => {
   if (user) {
     loginBtn.innerText = user.displayName;
     overlay.classList.add("hidden");
+    loadProperties();
   } else {
     loginBtn.innerText = "Login";
     overlay.classList.remove("hidden");
@@ -159,6 +138,7 @@ const homePage = document.getElementById("homePage");
 const postPage = document.getElementById("postPage");
 
 document.getElementById("postBtn").onclick = () => {
+  if (!user) return alert("Login first!");
   homePage.classList.add("hidden");
   postPage.classList.remove("hidden");
 };
@@ -169,49 +149,61 @@ function goHome() {
 }
 window.goHome = goHome;
 
-/* IMAGE PREVIEW */
-const imagesInput = document.getElementById("images");
-const preview = document.getElementById("preview");
+/* UPLOAD + SUBMIT */
+document.getElementById("submitBtn").onclick = async () => {
 
-let imageData = [];
+  if (!user) return alert("Login required");
 
-imagesInput.addEventListener("change", (e) => {
-  preview.innerHTML = "";
-  imageData = [];
+  const files = document.getElementById("images").files;
+  let imageUrls = [];
 
-  Array.from(e.target.files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      imageData.push(reader.result);
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const storageRef = ref(storage, `properties/${Date.now()}-${file.name}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    imageUrls.push(url);
+  }
 
-      const img = document.createElement("img");
-      img.src = reader.result;
-      img.className = "w-20 h-20 object-cover rounded-lg";
-      preview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-  });
-});
-
-/* SUBMIT */
-document.getElementById("submitBtn").onclick = () => {
-
-  if (!user) return alert("Please login first");
-
-  const post = {
+  await addDoc(collection(db, "properties"), {
     title: title.value,
     details: details.value,
     price: price.value,
     phone: phone.value,
     location: location.value,
-    images: imageData,
+    images: imageUrls,
     date: new Date().toISOString(),
-    user: user.displayName
-  };
+    user: user.displayName,
+    uid: user.uid
+  });
 
-  console.log("POST:", post);
-  alert("Property created (check console)");
+  alert("Property posted successfully!");
+  goHome();
+  loadProperties();
 };
+
+/* LOAD PROPERTIES */
+async function loadProperties() {
+  const container = document.getElementById("listings");
+  container.innerHTML = "";
+
+  const snapshot = await getDocs(collection(db, "properties"));
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+
+    container.innerHTML += `
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <img src="${data.images?.[0] || ''}" class="h-52 w-full object-cover"/>
+        <div class="p-4">
+          <h3 class="font-bold">${data.title}</h3>
+          <p class="text-gray-500">${data.location}</p>
+          <p class="font-bold mt-2">${data.price}</p>
+        </div>
+      </div>
+    `;
+  });
+}
 
 </script>
 
