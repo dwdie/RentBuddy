@@ -17,7 +17,7 @@
     </div>
 
     <div class="flex gap-3">
-      <button class="px-4 py-2 rounded-2xl border hover:bg-pink-200 transition">
+      <button id="loginBtn" class="px-4 py-2 rounded-2xl border hover:bg-pink-200 transition">
         Login with Google
       </button>
 
@@ -160,6 +160,13 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js';
     import { getAnalytics } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js';
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js';
 
     const firebaseConfig = {
       apiKey: 'AIzaSyCIoxwUza-JTJUmGRe80_hCID-AIfHlkUw',
@@ -173,6 +180,31 @@
 
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
+
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginBtn.addEventListener('click', async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        loginBtn.innerText = `Logged in as ${user.displayName}`;
+
+        alert(`Welcome ${user.displayName}!`);
+      } catch (error) {
+        console.error(error);
+        alert('Google Login Failed');
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginBtn.innerText = `Logged in as ${user.displayName}`;
+      }
+    });
 
     console.log('Firebase Connected Successfully');
   </script>
