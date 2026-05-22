@@ -1,138 +1,181 @@
-import { useEffect } from 'react';
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js';
-import { getAnalytics } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RentBuddy</title>
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyCIoxwUza-JTJUmGRe80_hCID-AIfHlkUw',
-  authDomain: 'rentbuddyonline.firebaseapp.com',
-  projectId: 'rentbuddyonline',
-  storageBucket: 'rentbuddyonline.firebasestorage.app',
-  messagingSenderId: '1023186235567',
-  appId: '1:1023186235567:web:d6c1dbb6947f46c0a4e45a',
-  measurementId: 'G-KTGB5W7XSB',
-};
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-pink-50 text-gray-900 min-h-screen">
 
-export default function RentalMVP() {
-  useEffect(() => {
-    const app = initializeApp(firebaseConfig);
-    getAnalytics(app);
-  }, []);
-  const listings = [
-    {
-      id: 1,
-      title: 'Modern Apartment',
-      price: '৳15,000/month',
-      location: 'Mymensingh',
-      image:
-        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'Family House',
-      price: '৳25,000/month',
-      location: 'Dhaka',
-      image:
-        'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-      id: 3,
-      title: 'Student Room',
-      price: '৳6,000/month',
-      location: 'Mymensingh',
-      image:
-        'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200&auto=format&fit=crop',
-    },
-  ];
-
-  return (
-    <div className="min-h-screen bg-pink-50 text-gray-900">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-6 py-4 bg-pink-100/80 backdrop-blur shadow-sm sticky top-0 z-10">
-        <div>
-          <h1 className="text-2xl font-bold">RentBuddy</h1>
-          <p className="text-sm text-gray-500">Find Your Perfect Home</p>
-        </div>
-
-        <div className="flex gap-3">
-          <button className="px-4 py-2 rounded-2xl border hover:bg-gray-100 transition">
-            Login with Google
-          </button>
-          <button className="px-4 py-2 rounded-2xl bg-pink-500 text-white hover:bg-pink-600 transition">
-            Post Property
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="px-6 py-16 text-center">
-        <h2 className="text-5xl font-bold mb-4">
-          Discover Rental Homes Easily
-        </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-          Browse apartments, family houses, and student rooms in Bangladesh.
-        </p>
-
-        <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-4">
-          <input
-            type="text"
-            placeholder="Search by city or area"
-            className="flex-1 px-5 py-4 rounded-2xl border outline-none"
-          />
-
-          <button className="px-6 py-4 rounded-2xl bg-pink-500 text-white font-medium hover:bg-pink-600 transition">
-            Search
-          </button>
-        </div>
-      </section>
-
-      {/* Listings */}
-      <section className="px-6 pb-16">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-3xl font-bold">Featured Listings</h3>
-          <button className="text-sm border px-4 py-2 rounded-xl hover:bg-white transition">
-            View All
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map((house) => (
-            <div
-              key={house.id}
-              className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl border border-pink-100 transition"
-            >
-              <img
-                src={house.image}
-                alt={house.title}
-                className="h-60 w-full object-cover"
-              />
-
-              <div className="p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-xl font-semibold">{house.title}</h4>
-                  <span className="text-sm bg-pink-100 text-pink-700 px-3 py-1 rounded-full">
-                    Available
-                  </span>
-                </div>
-
-                <p className="text-gray-500 mb-4">{house.location}</p>
-
-                <div className="flex items-center justify-between">
-                  <p className="text-2xl font-bold">{house.price}</p>
-
-                  <button className="px-4 py-2 rounded-xl bg-pink-500 text-white hover:bg-pink-600 transition">
-                    Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-pink-100 border-t border-pink-200 px-6 py-6 text-center text-gray-600">
-        © 2026 RentBuddy — Rental Platform MVP
-      </footer>
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-pink-100/80 backdrop-blur shadow-sm sticky top-0 z-10">
+    <div>
+      <h1 class="text-2xl font-bold">RentBuddy</h1>
+      <p class="text-sm text-gray-500">Find Your Perfect Home</p>
     </div>
-  );
-}
+
+    <div class="flex gap-3">
+      <button class="px-4 py-2 rounded-2xl border hover:bg-pink-200 transition">
+        Login with Google
+      </button>
+
+      <button class="px-4 py-2 rounded-2xl bg-pink-500 text-white hover:bg-pink-600 transition">
+        Post Property
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="px-6 py-16 text-center">
+    <h2 class="text-5xl font-bold mb-4">
+      Discover Rental Homes Easily
+    </h2>
+
+    <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+      Browse apartments, family houses, and student rooms in Bangladesh.
+    </p>
+
+    <div class="max-w-3xl mx-auto flex flex-col md:flex-row gap-4">
+      <input
+        type="text"
+        placeholder="Search by city or area"
+        class="flex-1 px-5 py-4 rounded-2xl border outline-none"
+      />
+
+      <button class="px-6 py-4 rounded-2xl bg-pink-500 text-white font-medium hover:bg-pink-600 transition">
+        Search
+      </button>
+    </div>
+  </section>
+
+  <!-- Listings -->
+  <section class="px-6 pb-16">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-3xl font-bold">Featured Listings</h3>
+
+      <button class="text-sm border px-4 py-2 rounded-xl hover:bg-white transition">
+        View All
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Card 1 -->
+      <div class="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl border border-pink-100 transition">
+        <img
+          src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"
+          class="h-60 w-full object-cover"
+          alt="Apartment"
+        />
+
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xl font-semibold">Modern Apartment</h4>
+
+            <span class="text-sm bg-pink-100 text-pink-700 px-3 py-1 rounded-full">
+              Available
+            </span>
+          </div>
+
+          <p class="text-gray-500 mb-4">Mymensingh</p>
+
+          <div class="flex items-center justify-between">
+            <p class="text-2xl font-bold">৳15,000/month</p>
+
+            <button class="px-4 py-2 rounded-xl bg-pink-500 text-white hover:bg-pink-600 transition">
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl border border-pink-100 transition">
+        <img
+          src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop"
+          class="h-60 w-full object-cover"
+          alt="House"
+        />
+
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xl font-semibold">Family House</h4>
+
+            <span class="text-sm bg-pink-100 text-pink-700 px-3 py-1 rounded-full">
+              Available
+            </span>
+          </div>
+
+          <p class="text-gray-500 mb-4">Dhaka</p>
+
+          <div class="flex items-center justify-between">
+            <p class="text-2xl font-bold">৳25,000/month</p>
+
+            <button class="px-4 py-2 rounded-xl bg-pink-500 text-white hover:bg-pink-600 transition">
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl border border-pink-100 transition">
+        <img
+          src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200&auto=format&fit=crop"
+          class="h-60 w-full object-cover"
+          alt="Student Room"
+        />
+
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xl font-semibold">Student Room</h4>
+
+            <span class="text-sm bg-pink-100 text-pink-700 px-3 py-1 rounded-full">
+              Available
+            </span>
+          </div>
+
+          <p class="text-gray-500 mb-4">Mymensingh</p>
+
+          <div class="flex items-center justify-between">
+            <p class="text-2xl font-bold">৳6,000/month</p>
+
+            <button class="px-4 py-2 rounded-xl bg-pink-500 text-white hover:bg-pink-600 transition">
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-pink-100 border-t border-pink-200 px-6 py-6 text-center text-gray-600">
+    © 2026 RentBuddy — Rental Platform MVP
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js';
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js';
+
+    const firebaseConfig = {
+      apiKey: 'AIzaSyCIoxwUza-JTJUmGRe80_hCID-AIfHlkUw',
+      authDomain: 'rentbuddyonline.firebaseapp.com',
+      projectId: 'rentbuddyonline',
+      storageBucket: 'rentbuddyonline.firebasestorage.app',
+      messagingSenderId: '1023186235567',
+      appId: '1:1023186235567:web:d6c1dbb6947f46c0a4e45a',
+      measurementId: 'G-KTGB5W7XSB'
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    console.log('Firebase Connected Successfully');
+  </script>
+
+</body>
+</html>
