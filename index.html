@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RentBuddy</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -14,7 +13,7 @@
 <div id="authOverlay" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
   <div class="bg-white p-6 rounded-2xl w-full max-w-sm text-center">
     <h2 class="text-2xl font-bold mb-2">Welcome to RentBuddy</h2>
-    <p class="text-gray-500 mb-4">Login to post properties</p>
+    <p class="text-gray-500 mb-4">Login to continue</p>
     <button id="overlayLoginBtn" class="w-full bg-pink-500 text-white py-3 rounded-xl">
       Login with Google
     </button>
@@ -22,46 +21,84 @@
 </div>
 
 <!-- NAVBAR -->
-<nav class="flex justify-between items-center px-6 py-4 bg-pink-100/80 backdrop-blur shadow-sm sticky top-0">
+<nav class="flex justify-between items-center px-6 py-4 bg-pink-100/80 backdrop-blur shadow-sm sticky top-0 z-10">
   <h1 class="text-2xl font-bold">RentBuddy</h1>
 
-  <button id="loginBtn" class="px-4 py-2 border rounded-xl hover:bg-pink-200">
-    Login
-  </button>
+  <div class="flex gap-3">
+    <button id="loginBtn" class="px-4 py-2 border rounded-xl hover:bg-pink-200">
+      Login
+    </button>
+
+    <button id="postBtn" class="px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600">
+      Post Property
+    </button>
+  </div>
 </nav>
 
-<!-- FORM -->
-<section class="max-w-3xl mx-auto px-6 py-10">
+<!-- ================= HOME PAGE ================= -->
+<section id="homePage">
+
+  <!-- HERO -->
+  <div class="text-center px-6 py-14">
+    <h2 class="text-5xl font-bold mb-4">Find Your Perfect Home</h2>
+    <p class="text-gray-600 max-w-2xl mx-auto">
+      Browse rental homes in Bangladesh easily.
+    </p>
+  </div>
+
+  <!-- LISTINGS -->
+  <div class="px-6 grid grid-cols-1 md:grid-cols-3 gap-6 pb-16">
+
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+      <img class="h-52 w-full object-cover" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200"/>
+      <div class="p-4">
+        <h3 class="font-bold">Modern Apartment</h3>
+        <p class="text-gray-500">Mymensingh</p>
+        <p class="font-bold mt-2">৳15,000</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+      <img class="h-52 w-full object-cover" src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200"/>
+      <div class="p-4">
+        <h3 class="font-bold">Family House</h3>
+        <p class="text-gray-500">Dhaka</p>
+        <p class="font-bold mt-2">৳25,000</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+      <img class="h-52 w-full object-cover" src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200"/>
+      <div class="p-4">
+        <h3 class="font-bold">Student Room</h3>
+        <p class="text-gray-500">Mymensingh</p>
+        <p class="font-bold mt-2">৳6,000</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= POST PAGE ================= -->
+<section id="postPage" class="hidden max-w-3xl mx-auto px-6 py-10">
+
+  <button onclick="goHome()" class="mb-6 px-4 py-2 border rounded-xl">
+    ← Back
+  </button>
 
   <h2 class="text-3xl font-bold mb-6">Post a Property</h2>
 
-  <!-- IMAGES -->
   <label class="font-semibold">Images</label>
-  <input id="images" type="file" multiple accept="image/*" class="block mb-3" />
+  <input id="images" type="file" multiple accept="image/*" class="block mb-3"/>
   <div id="preview" class="flex gap-2 flex-wrap mb-5"></div>
 
-  <!-- TITLE -->
-  <input id="title" placeholder="Title"
-    class="w-full border p-3 rounded-xl mb-4"/>
+  <input id="title" placeholder="Title" class="w-full border p-3 rounded-xl mb-4"/>
+  <textarea id="details" placeholder="Details" class="w-full border p-3 rounded-xl mb-4"></textarea>
+  <input id="price" placeholder="Price" class="w-full border p-3 rounded-xl mb-4"/>
+  <input id="phone" placeholder="Phone Number" class="w-full border p-3 rounded-xl mb-4"/>
+  <input id="location" placeholder="Location" class="w-full border p-3 rounded-xl mb-4"/>
 
-  <!-- DETAILS -->
-  <textarea id="details" placeholder="Details"
-    class="w-full border p-3 rounded-xl mb-4"></textarea>
-
-  <!-- PRICE -->
-  <input id="price" placeholder="Price"
-    class="w-full border p-3 rounded-xl mb-4"/>
-
-  <!-- PHONE -->
-  <input id="phone" placeholder="Contact Phone"
-    class="w-full border p-3 rounded-xl mb-4"/>
-
-  <!-- LOCATION -->
-  <input id="location" placeholder="Location"
-    class="w-full border p-3 rounded-xl mb-4"/>
-
-  <button id="submitBtn"
-    class="w-full bg-pink-500 text-white py-3 rounded-xl hover:bg-pink-600">
+  <button id="submitBtn" class="w-full bg-pink-500 text-white py-3 rounded-xl">
     Submit Property
   </button>
 
@@ -99,9 +136,7 @@ const overlayLoginBtn = document.getElementById("overlayLoginBtn");
 const overlay = document.getElementById("authOverlay");
 
 function login() {
-  signInWithPopup(auth, provider).catch(() => {
-    alert("Login failed");
-  });
+  signInWithPopup(auth, provider).catch(() => alert("Login failed"));
 }
 
 loginBtn.onclick = login;
@@ -119,6 +154,21 @@ onAuthStateChanged(auth, (u) => {
   }
 });
 
+/* PAGE SWITCH */
+const homePage = document.getElementById("homePage");
+const postPage = document.getElementById("postPage");
+
+document.getElementById("postBtn").onclick = () => {
+  homePage.classList.add("hidden");
+  postPage.classList.remove("hidden");
+};
+
+function goHome() {
+  postPage.classList.add("hidden");
+  homePage.classList.remove("hidden");
+}
+window.goHome = goHome;
+
 /* IMAGE PREVIEW */
 const imagesInput = document.getElementById("images");
 const preview = document.getElementById("preview");
@@ -131,7 +181,6 @@ imagesInput.addEventListener("change", (e) => {
 
   Array.from(e.target.files).forEach(file => {
     const reader = new FileReader();
-
     reader.onload = () => {
       imageData.push(reader.result);
 
@@ -140,7 +189,6 @@ imagesInput.addEventListener("change", (e) => {
       img.className = "w-20 h-20 object-cover rounded-lg";
       preview.appendChild(img);
     };
-
     reader.readAsDataURL(file);
   });
 });
@@ -148,24 +196,21 @@ imagesInput.addEventListener("change", (e) => {
 /* SUBMIT */
 document.getElementById("submitBtn").onclick = () => {
 
-  if (!user) {
-    alert("Please login first");
-    return;
-  }
+  if (!user) return alert("Please login first");
 
   const post = {
-    title: document.getElementById("title").value,
-    details: document.getElementById("details").value,
-    price: document.getElementById("price").value,
-    phone: document.getElementById("phone").value,
-    location: document.getElementById("location").value,
+    title: title.value,
+    details: details.value,
+    price: price.value,
+    phone: phone.value,
+    location: location.value,
     images: imageData,
     date: new Date().toISOString(),
     user: user.displayName
   };
 
   console.log("POST:", post);
-  alert("Property submitted (check console)");
+  alert("Property created (check console)");
 };
 
 </script>
